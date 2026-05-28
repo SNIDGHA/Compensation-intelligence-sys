@@ -150,7 +150,7 @@ app.post('/api/salaries', async (req, res) => {
 // 3. GET Analytics endpoint
 app.get('/api/analytics', async (req, res) => {
   try {
-    const salaries = await prisma.salaryRecord.findMany({
+    const salaries: any = await prisma.salaryRecord.findMany({
       where: { status: 'VERIFIED' },
       include: { company: true }
     });
@@ -164,19 +164,19 @@ app.get('/api/analytics', async (req, res) => {
       });
     }
 
-    const allTC = salaries.map(s => s.totalCompensation);
-    const avgTC = Math.round(allTC.reduce((sum, val) => sum + val, 0) / salaries.length);
+    const allTC = salaries.map((s: any) => s.totalCompensation);
+    const avgTC = Math.round(allTC.reduce((sum: any, val: any) => sum + val, 0) / salaries.length);
     const totalCount = salaries.length;
 
-    const companyTotals: { [name: string]: number[] } = {};
-    salaries.forEach(s => {
+    const companyTotals: any = {};
+    salaries.forEach((s: any) => {
       if (!companyTotals[s.company.name]) companyTotals[s.company.name] = [];
       companyTotals[s.company.name].push(s.totalCompensation);
     });
 
     let topCompany = 'N/A';
     let maxMedianPay = 0;
-    Object.entries(companyTotals).forEach(([name, pays]) => {
+    Object.entries(companyTotals).forEach(([name, pays]: any) => {
       const med = calculateMedian(pays);
       if (med > maxMedianPay) {
         maxMedianPay = med;
@@ -185,12 +185,12 @@ app.get('/api/analytics', async (req, res) => {
     });
 
     const tiers = ['JUNIOR', 'MID', 'SENIOR', 'STAFF', 'PRINCIPAL'];
-    const byTier = tiers.map(tier => {
-      const filtered = salaries.filter(s => s.standardLevelTier === tier);
-      const tcs = filtered.map(s => s.totalCompensation);
-      const bases = filtered.map(s => s.baseSalary);
-      const stocks = filtered.map(s => s.stockGrant / 4);
-      const bonuses = filtered.map(s => s.bonus);
+    const byTier = tiers.map((tier: any) => {
+      const filtered = salaries.filter((s: any) => s.standardLevelTier === tier);
+      const tcs = filtered.map((s: any) => s.totalCompensation);
+      const bases = filtered.map((s: any) => s.baseSalary);
+      const stocks = filtered.map((s: any) => s.stockGrant / 4);
+      const bonuses = filtered.map((s: any) => s.bonus);
 
       return {
         tier,
@@ -203,13 +203,13 @@ app.get('/api/analytics', async (req, res) => {
       };
     });
 
-    const activeCompanies = Array.from(new Set(salaries.map(s => s.company.name)));
-    const companyData = activeCompanies.map(compName => {
-      const filtered = salaries.filter(s => s.company.name === compName);
-      const tcs = filtered.map(s => s.totalCompensation);
-      const bases = filtered.map(s => s.baseSalary);
-      const stocks = filtered.map(s => s.stockGrant / 4);
-      const bonuses = filtered.map(s => s.bonus);
+    const activeCompanies = Array.from(new Set(salaries.map((s: any) => s.company.name)));
+    const companyData = activeCompanies.map((compName: any) => {
+      const filtered = salaries.filter((s: any) => s.company.name === compName);
+      const tcs = filtered.map((s: any) => s.totalCompensation);
+      const bases = filtered.map((s: any) => s.baseSalary);
+      const stocks = filtered.map((s: any) => s.stockGrant / 4);
+      const bonuses = filtered.map((s: any) => s.bonus);
 
       return {
         company: compName,
@@ -220,13 +220,13 @@ app.get('/api/analytics', async (req, res) => {
         count: filtered.length
       };
     })
-    .sort((a, b) => b.count - a.count)
+    .sort((a: any, b: any) => b.count - a.count)
     .slice(0, 6);
 
-    const locations = Array.from(new Set(salaries.map(s => s.location)));
-    const byLocation = locations.map(loc => {
-      const filtered = salaries.filter(s => s.location === loc);
-      const tcs = filtered.map(s => s.totalCompensation);
+    const locations = Array.from(new Set(salaries.map((s: any) => s.location)));
+    const byLocation = locations.map((loc: any) => {
+      const filtered = salaries.filter((s: any) => s.location === loc);
+      const tcs = filtered.map((s: any) => s.totalCompensation);
 
       return {
         location: loc,
@@ -234,7 +234,7 @@ app.get('/api/analytics', async (req, res) => {
         count: filtered.length
       };
     })
-    .sort((a, b) => b.count - a.count)
+    .sort((a: any, b: any) => b.count - a.count)
     .slice(0, 5);
 
     res.json({
