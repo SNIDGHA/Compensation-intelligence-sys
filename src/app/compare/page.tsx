@@ -48,7 +48,8 @@ export default function CompareLevels() {
 
   const fetchSalaries = async () => {
     try {
-      const res = await fetch('/api/salaries');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${apiUrl}/api/salaries`);
       if (res.ok) {
         const data = await res.json();
         setSalaries(data);

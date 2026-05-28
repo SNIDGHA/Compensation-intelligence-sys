@@ -116,7 +116,8 @@ export default function Dashboard() {
       params.append('sortBy', sortBy);
       params.append('sortOrder', sortOrder);
 
-      const res = await fetch(`/api/salaries?${params.toString()}`);
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${apiUrl}/api/salaries?${params.toString()}`);
       if (res.ok) {
         const data = await res.json();
         setSalaries(data);
@@ -136,7 +137,8 @@ export default function Dashboard() {
 
   const fetchAnalytics = async () => {
     try {
-      const res = await fetch('/api/analytics');
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${apiUrl}/api/analytics`);
       if (res.ok) {
         const data = await res.json();
         setAnalytics(data);

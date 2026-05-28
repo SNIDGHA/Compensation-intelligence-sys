@@ -43,7 +43,8 @@ export default function SubmitSalary() {
     setErrors([]);
 
     try {
-      const res = await fetch('/api/salaries', {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '';
+      const res = await fetch(`${apiUrl}/api/salaries`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
