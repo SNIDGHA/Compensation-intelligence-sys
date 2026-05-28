@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Company {
+  id               String         @id @default(uuid())
+  name             String         @unique
+  standardizedName String
+  sector           String?
+  logoUrl          String?
+  salaries         SalaryRecord[]
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+}
+
+model LevelMap {
+  id                String   @id @default(uuid())
+  companyName       String   // E.g. Google, Meta
+  companyLevel      String   // E.g. L4, E4 (case insensitive normalized)
+  standardLevelTier String   // E.g. JUNIOR, MID, SENIOR, STAFF, PRINCIPAL
+  levelRank         Int      // E.g. 1 for Junior, 2 for Mid, etc.
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([companyName, companyLevel])
+}
+
+model SalaryRecord {
+  id                String   @id @default(uuid())
+  companyId         String
+  company           Company  @relation(fields: [companyId], references: [id])
+  title             String   // E.g. Software Engineer, Product Manager
+  level             String   // The raw level submitted by user (e.g. L4, Senior)
+  standardLevelTier String   // Standardized level tier mapped automatically (e.g. MID)
+  location          String   // E.g. San Francisco, CA or Bangalore, India
+  baseSalary        Float    // Annual base salary
+  stockGrant        Float    // 4-year stock grant (RSUs/Equity)
+  bonus             Float    // Annual bonus
+  totalCompensation Float    // Calculated annual: Base + (Stock / 4) + Bonus
+  createdAt         DateTime @default(now())
+  status            String   @default("VERIFIED")
+}
