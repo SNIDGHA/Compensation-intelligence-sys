@@ -3,6 +3,8 @@ import { prisma } from 'src/lib/db';
 import { validateSalarySubmission } from 'src/lib/validation';
 import { normalizeCompanyName, calculateTotalCompensation, mapLevelToStandardTier } from 'src/lib/normalization';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);

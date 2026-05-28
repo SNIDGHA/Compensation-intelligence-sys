@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from 'src/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 function calculateMedian(values: number[]): number {
   if (values.length === 0) return 0;
 
